@@ -1,0 +1,6 @@
+filebeat.prospectors:
+- input_type: log
+  paths:
+    - /opt/data/zhangshuang-9douyu/storage/*/*.log
+output.logstash:
+  hosts: ["dev-113:5044"]
