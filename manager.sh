@@ -6,21 +6,24 @@ devops_prj_path="$prj_path/devops"
 template_path="$devops_prj_path/template"   
 config_path="$devops_prj_path/config"   
 
-filebeat_image=prima/filebeat
-filebeat_container=filebeat
+logstash_image=logstash:5.4.0
+logstash_container=logstash
+
+log_path='/opt/data/logstash'
 
 source $devops_prj_path/base.sh
 
-log_path='/opt/data/filebeat'
-
 function run() {
     local args='--restart=always'
-    args="$args -v $config_path/filebeat.yml:/filebeat.yml"
-    run_cmd "docker run -d $args --name $filebeat_container $filebeat_image"
+    args="$args --net=host"
+    args="$args -v $config_path/logstash.conf:/logstash.conf"
+    args="$args -v $log_path:/var/log"
+    
+    run_cmd "docker run -d $args --name $logstash_container $logstash_image -f /logstash.conf"
 }
 
 function stop() {
-    stop_container $filebeat_container
+    stop_container $logstash_container
 }
 
 function restart() {
