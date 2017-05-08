@@ -30,6 +30,12 @@ function ensure_dir() {
     fi
 }
 
+function ensure_permissions(){
+    if [  -d $1 -a ! "$(ls $1)" ];then
+        run_cmd "chmod -R 777 $1"
+    fi
+}
+
 function container_is_running() {
     local container_name=$1
     local num=$(docker ps -a -f name="^/$container_name$" -q | wc -l)

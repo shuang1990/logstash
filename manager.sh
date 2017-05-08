@@ -14,12 +14,16 @@ log_path='/opt/data/logstash'
 source $devops_prj_path/base.sh
 
 function run() {
+    ensure_dir "$log_path"
+    ensure_permissions "$log_path"
+
+    local docker_config_path='/etc/logstash/conf.d'
     local args='--restart=always'
     args="$args --net=host"
-    args="$args -v $config_path/logstash.conf:/logstash.conf"
-    args="$args -v $log_path:/var/log"
+    args="$args -v $config_path:$docker_config_path"
+    args="$args -v $log_path:/tmp/log"
     
-    run_cmd "docker run -d $args --name $logstash_container $logstash_image -f /logstash.conf"
+    run_cmd "docker run -d $args --name $logstash_container $logstash_image -f $docker_config_path"
 }
 
 function stop() {
