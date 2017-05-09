@@ -20,6 +20,7 @@ function run() {
     local docker_config_path='/etc/logstash/conf.d'
     local args='--restart=always'
     args="$args --net=host"
+    args="$args -v /etc/localtime:/etc/localtime"
     args="$args -v $config_path:$docker_config_path"
     args="$args -v $log_path:/tmp/log"
     
